@@ -55,6 +55,7 @@ Các Định hướng Lối viết Khác
   1. [Hiệu suất](#performance)
   1. [Các Tài nguyên](#resources)
   1. [Trên Thực tế](#in-the-wild)
+  1. [Danh mục các thuật ngữ](#terminology)
   1. [Dịch](#translation)
   1. [Về Hướng dẫn Lối viết JavaScript](#the-javascript-style-guide-guide)
   1. [Nói chuyện với Chúng tôi về JavaScript](#chat-with-us-about-javascript)
