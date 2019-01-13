@@ -8,7 +8,7 @@
 [![Lượt tải](https://img.shields.io/npm/dm/eslint-config-airbnb-base.svg)](https://www.npmjs.com/package/eslint-config-airbnb-base)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/airbnb/javascript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-**Lưu ý của người dịch**: Bản dịch này, với nỗ lực truyền đạt nội dung bằng tiếng Việt nhiều nhất có thể, đã dịch sang tiếng Việt các thuật ngữ, và/hoặc các từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Nếu bạn cảm thấy không quen thuộc hoặc khó khăn trong việc hiểu một số từ trong bản dịch này, hoặc muốn biết các từ tương ứng trong Tiếng Anh, vui lòng tham khảo phần [Danh mục các thuật ngữ](#terminology).
+**Lưu ý của người dịch**: Bản dịch này, với nỗ lực truyền đạt nội dung bằng tiếng Việt nhiều nhất có thể, đã dịch sang tiếng Việt các thuật ngữ, và/hoặc các từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Nếu bạn cảm thấy không quen thuộc hoặc khó khăn trong việc hiểu một số từ trong bản dịch này, hoặc muốn biết các từ tương ứng trong Tiếng Anh, vui lòng tham khảo phần [Danh mục các Thuật ngữ](#terminology).
 
 Định hướng này cũng được dịch sang các ngôn ngữ khác. Xem phần [Dịch](#translation).
 
@@ -55,7 +55,7 @@ Các Định hướng Lối viết Khác
   1. [Hiệu suất](#performance)
   1. [Các Tài nguyên](#resources)
   1. [Trên Thực tế](#in-the-wild)
-  1. [Danh mục các thuật ngữ](#terminology)
+  1. [Danh mục các Thuật ngữ](#terminology)
   1. [Dịch](#translation)
   1. [Về Hướng dẫn Lối viết JavaScript](#the-javascript-style-guide-guide)
   1. [Nói chuyện với Chúng tôi về JavaScript](#chat-with-us-about-javascript)
@@ -3801,7 +3801,7 @@ Các Định hướng Lối viết Khác
 
 **[⬆ về đầu trang](#table-of-contents)**
 
-## <a name="terminology">Danh mục các thuật ngữ</a>
+## <a name="terminology">Danh mục các Thuật ngữ</a>
 
   Dưới đây là danh mục các từ tiếng Anh tương ứng của các thuật ngữ, và/hoặc các từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Các từ được dịch có thể chỉ được hiểu theo một ngữ cảnh là bản dịch này.
 

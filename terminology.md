@@ -1,4 +1,4 @@
-## <a name="terminology">Danh mục các thuật ngữ</a>
+## <a name="terminology">Danh mục các Thuật ngữ</a>
 
   Dưới đây là danh mục các từ tiếng Anh tương ứng của các thuật ngữ, và/hoặc các từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Các từ được dịch có thể chỉ được hiểu theo một ngữ cảnh là bản dịch này.
 
