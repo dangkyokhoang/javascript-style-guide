@@ -2,13 +2,13 @@
 
 *Một cách tiếp cận hợp lý đối với JavaScript*
 
+> **Lưu ý của người dịch**: Bản dịch này, với nỗ lực truyền đạt nội dung bằng tiếng Việt nhiều nhất có thể, đã dịch sang tiếng Việt các thuật ngữ, và/hoặc các từ, cụm từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Nếu bạn cảm thấy không quen thuộc hoặc khó khăn trong việc hiểu một số từ trong bản dịch này, hoặc muốn biết các từ tương ứng trong Tiếng Anh, vui lòng tham khảo phần [Danh mục các Thuật ngữ](#terminology).
+
 > **Lưu ý**: Định hướng này giả định bạn đang sử dụng [Babel](https://babeljs.io), và đòi hỏi bạn sử dụng [babel-preset-airbnb](https://npmjs.com/babel-preset-airbnb) hoặc một bộ tương đương. Nó cũng giả định rằng bạn đang cài bộ trợ năng cho ứng dụng của bạn, như [airbnb-browser-shims](https://npmjs.com/airbnb-browser-shims) hoặc một bộ tương đương.
 
 [![Lượt tải](https://img.shields.io/npm/dm/eslint-config-airbnb.svg)](https://www.npmjs.com/package/eslint-config-airbnb)
 [![Lượt tải](https://img.shields.io/npm/dm/eslint-config-airbnb-base.svg)](https://www.npmjs.com/package/eslint-config-airbnb-base)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/airbnb/javascript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-**Lưu ý của người dịch**: Bản dịch này, với nỗ lực truyền đạt nội dung bằng tiếng Việt nhiều nhất có thể, đã dịch sang tiếng Việt các thuật ngữ, và/hoặc các từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Nếu bạn cảm thấy không quen thuộc hoặc khó khăn trong việc hiểu một số từ trong bản dịch này, hoặc muốn biết các từ tương ứng trong Tiếng Anh, vui lòng tham khảo phần [Danh mục các Thuật ngữ](#terminology).
 
 Định hướng này cũng được dịch sang các ngôn ngữ khác. Xem phần [Dịch](#translation).
 
@@ -54,7 +54,7 @@ Các Định hướng Lối viết Khác
   1. [Sự kiểm thử](#testing)
   1. [Hiệu suất](#performance)
   1. [Các Tài nguyên](#resources)
-  1. [Trên Thực tế](#in-the-wild)
+  1. [Thực tế Áp dụng](#in-the-wild)
   1. [Danh mục các Thuật ngữ](#terminology)
   1. [Dịch](#translation)
   1. [Về Hướng dẫn Lối viết JavaScript](#the-javascript-style-guide-guide)
@@ -425,13 +425,11 @@ Các Định hướng Lối viết Khác
     // không tốt - không có giá trị trả về đồng nghĩa với `acc` sẽ trở thành undefined sau lượt duyệt đầu tiên
     [[0, 1], [2, 3], [4, 5]].reduce((acc, item, index) => {
       const flatten = acc.concat(item);
-      acc[index] = flatten;
     });
 
     // tốt
     [[0, 1], [2, 3], [4, 5]].reduce((acc, item, index) => {
       const flatten = acc.concat(item);
-      acc[index] = flatten;
       return flatten;
     });
 
@@ -961,7 +959,7 @@ Các Định hướng Lối viết Khác
     });
 
     // tốt
-    [1, 2, 3].map(number => `Một chuỗi có chứa số ${number}.`);
+    [1, 2, 3].map(number => `Một chuỗi có chứa số ${number + 1}.`);
 
     // tốt
     [1, 2, 3].map((number) => {
@@ -2651,8 +2649,62 @@ Các Định hướng Lối viết Khác
     }
     ```
 
+  <a name="whitespace--no-multiple-blanks"></a>
+  - [19.9](#whitespace--no-multiple-blanks) Do not use multiple blank lines to pad your code. eslint: [`no-multiple-empty-lines`](https://eslint.org/docs/rules/no-multiple-empty-lines)
+
+    <!-- markdownlint-disable MD012 -->
+    ``` javascript
+    // không tốt
+    class Person {
+      constructor(fullName, email, birthday) {
+        this.fullName = fullName;
+
+
+        this.email = email;
+
+
+        this.setAge(birthday);
+      }
+
+
+      setAge(birthday) {
+        const today = new Date();
+
+
+        const age = this.getAge(today, birthday);
+
+
+        this.age = age;
+      }
+
+
+      getAge(today, birthday) {
+        // ..
+      }
+    }
+
+    // tốt
+    class Person {
+      constructor(fullName, email, birthday) {
+        this.fullName = fullName;
+        this.email = email;
+        this.setAge(birthday);
+      }
+
+      setAge(birthday) {
+        const today = new Date();
+        const age = getAge(today, birthday);
+        this.age = age;
+      }
+
+      getAge(today, birthday) {
+        // ..
+      }
+    }
+    ```
+
   <a name="whitespace--in-parens"></a><a name="18.9"></a>
-  - [19.9](#whitespace--in-parens) Không thêm các dấu cách trong dấu ngoặc tròn. eslint: [`space-in-parens`](https://eslint.org/docs/rules/space-in-parens.html)
+  - [19.10](#whitespace--in-parens) Không thêm các dấu cách trong dấu ngoặc tròn. eslint: [`space-in-parens`](https://eslint.org/docs/rules/space-in-parens.html)
 
     ``` javascript
     // không tốt
@@ -2677,7 +2729,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--in-brackets"></a><a name="18.10"></a>
-  - [19.10](#whitespace--in-brackets) Không thêm các dấu cách trong các dấu ngoặc vuông. eslint: [`array-bracket-spacing`](https://eslint.org/docs/rules/array-bracket-spacing.html)
+  - [19.11](#whitespace--in-brackets) Không thêm các dấu cách trong các dấu ngoặc vuông. eslint: [`array-bracket-spacing`](https://eslint.org/docs/rules/array-bracket-spacing.html)
 
     ``` javascript
     // không tốt
@@ -2690,7 +2742,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--in-braces"></a><a name="18.11"></a>
-  - [19.11](#whitespace--in-braces) Thêm các dấu cách giữa các dấu ngoặc nhọn. eslint: [`object-curly-spacing`](https://eslint.org/docs/rules/object-curly-spacing.html)
+  - [19.12](#whitespace--in-braces) Thêm các dấu cách giữa các dấu ngoặc nhọn. eslint: [`object-curly-spacing`](https://eslint.org/docs/rules/object-curly-spacing.html)
 
     ``` javascript
     // không tốt
@@ -2701,7 +2753,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--max-len"></a><a name="18.12"></a>
-  - [19.12](#whitespace--max-len) Tránh các dòng mã có nhiều hơn 100 ký tự (kể cả khoảng trắng). Lưu ý: theo như [trên đây](#strings--line-length), các chuỗi được loại trừ bởi quy tắc này, và bạn không nên chia chúng ra. eslint: [`max-len`](https://eslint.org/docs/rules/max-len.html)
+  - [19.13](#whitespace--max-len) Tránh các dòng mã có nhiều hơn 100 ký tự (kể cả khoảng trắng). Lưu ý: theo như [trên đây](#strings--line-length), các chuỗi được loại trừ bởi quy tắc này, và bạn không nên chia chúng ra. eslint: [`max-len`](https://eslint.org/docs/rules/max-len.html)
 
     > Tại sao? Điều này đảm bảo tính khả đọc và khả năng bảo trì.
 
@@ -2731,7 +2783,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--block-spacing"></a>
-  - [19.13](#whitespace--block-spacing) Đảm bảo sự nhất quán về dấu cách sau dấu mở ngoặc và trước ký tự đầu tiên sau nó trên cùng một dòng. Quy tắc này cũng yêu cầu sự nhất quán về dấu cách trước dấu đóng ngoặc và sau ký tự cuối cùng trước nó trên cùng một dòng. eslint: [`block-spacing`](https://eslint.org/docs/rules/block-spacing)
+  - [19.14](#whitespace--block-spacing) Đảm bảo sự nhất quán về dấu cách sau dấu mở ngoặc và trước ký tự đầu tiên sau nó trên cùng một dòng. Quy tắc này cũng yêu cầu sự nhất quán về dấu cách trước dấu đóng ngoặc và sau ký tự cuối cùng trước nó trên cùng một dòng. eslint: [`block-spacing`](https://eslint.org/docs/rules/block-spacing)
 
     ``` javascript
     // không tốt
@@ -2744,7 +2796,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--comma-spacing"></a>
-  - [19.14](#whitespace--comma-spacing) Không sử dụng dấu cách trước dấu phẩy và phải sử dụng dấu cách sau dấu phẩy. eslint: [`comma-spacing`](https://eslint.org/docs/rules/comma-spacing)
+  - [19.15](#whitespace--comma-spacing) Không sử dụng dấu cách trước dấu phẩy và phải sử dụng dấu cách sau dấu phẩy. eslint: [`comma-spacing`](https://eslint.org/docs/rules/comma-spacing)
 
     ``` javascript
     // không tốt
@@ -2757,7 +2809,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--computed-property-spacing"></a>
-  - [19.15](#whitespace--computed-property-spacing) Không đặt dấu cách bên trong dấu ngoặc của thuộc tính được tính. eslint: [`computed-property-spacing`](https://eslint.org/docs/rules/computed-property-spacing)
+  - [19.16](#whitespace--computed-property-spacing) Không đặt dấu cách bên trong dấu ngoặc của thuộc tính được tính. eslint: [`computed-property-spacing`](https://eslint.org/docs/rules/computed-property-spacing)
 
     ``` javascript
     // không tốt
@@ -2774,7 +2826,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--func-call-spacing"></a>
-  - [19.16](#whitespace--func-call-spacing) Tránh sử dụng dấu cách giữa các hàm và phép gọi chúng. eslint: [`func-call-spacing`](https://eslint.org/docs/rules/func-call-spacing)
+  - [19.17](#whitespace--func-call-spacing) Tránh sử dụng dấu cách giữa các hàm và phép gọi chúng. eslint: [`func-call-spacing`](https://eslint.org/docs/rules/func-call-spacing)
 
     ``` javascript
     // không tốt
@@ -2788,7 +2840,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--key-spacing"></a>
-  - [19.17](#whitespace--key-spacing) Đặt dấu cách giữa các tên và giá trị của các thuộc tính nguyên văn. eslint: [`key-spacing`](https://eslint.org/docs/rules/key-spacing)
+  - [19.18](#whitespace--key-spacing) Đặt dấu cách giữa các tên và giá trị của các thuộc tính nguyên văn. eslint: [`key-spacing`](https://eslint.org/docs/rules/key-spacing)
 
     ``` javascript
     // không tốt
@@ -2800,10 +2852,10 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="whitespace--no-trailing-spaces"></a>
-  - [19.18](#whitespace--no-trailing-spaces) Tránh các dấu cách ở cuối các dòng. eslint: [`no-trailing-spaces`](https://eslint.org/docs/rules/no-trailing-spaces)
+  - [19.19](#whitespace--no-trailing-spaces) Tránh các dấu cách ở cuối các dòng. eslint: [`no-trailing-spaces`](https://eslint.org/docs/rules/no-trailing-spaces)
 
   <a name="whitespace--no-multiple-empty-lines"></a>
-  - [19.19](#whitespace--no-multiple-empty-lines) Tránh để nhiều dòng trống liên tiếp và chỉ cho một dòng trống ở cuối tệp. eslint: [`no-multiple-empty-lines`](https://eslint.org/docs/rules/no-multiple-empty-lines)
+  - [19.20](#whitespace--no-multiple-empty-lines) Tránh để nhiều dòng trống liên tiếp và chỉ cho một dòng trống ở cuối tệp. eslint: [`no-multiple-empty-lines`](https://eslint.org/docs/rules/no-multiple-empty-lines)
 
     <!-- markdownlint-disable MD012 -->
     ``` javascript
@@ -2882,7 +2934,7 @@ Các Định hướng Lối viết Khác
     };
     ```
 
-    ```javascript
+    ```  javascript
     // không tốt
     const hero = {
       firstName: 'Dana',
@@ -3662,7 +3714,7 @@ Các Định hướng Lối viết Khác
 
   - [JavaScript: The Good Parts](https://www.amazon.com/JavaScript-Good-Parts-Douglas-Crockford/dp/0596517742) - Douglas Crockford
   - [JavaScript Patterns](https://www.amazon.com/JavaScript-Patterns-Stoyan-Stefanov/dp/0596806752) - Stoyan Stefanov
-  - [Pro JavaScript Design Patterns](https://www.amazon.com/JavaScript-Design-Patterns-Recipes-Problem-Solution/dp/159059908X)  - Ross Harmes and Dustin Diaz
+  - [Pro JavaScript Design Patterns](https://www.amazon.com/JavaScript-Design-Patterns-Recipes-Problem-Solution/dp/159059908X) - Ross Harmes and Dustin Diaz
   - [High Performance Web Sites: Essential Knowledge for Front-End Engineers](https://www.amazon.com/High-Performance-Web-Sites-Essential/dp/0596529309) - Steve Souders
   - [Maintainable JavaScript](https://www.amazon.com/Maintainable-JavaScript-Nicholas-C-Zakas/dp/1449327680) - Nicholas C. Zakas
   - [JavaScript Web Applications](https://www.amazon.com/JavaScript-Web-Applications-Alex-MacCaw/dp/144930351X) - Alex MacCaw
@@ -3696,7 +3748,7 @@ Các Định hướng Lối viết Khác
 
 **[⬆ về đầu trang](#table-of-contents)**
 
-## <a name="in-the-wild">Trên Thực tế</a>
+## <a name="in-the-wild">Thực tế Áp dụng</a>
 
   Đây là danh sách những tổ chức sử dụng định hướng lối viết này. Gửi cho chúng tôi một yêu cầu kéo và chúng tôi sẽ thêm bạn vào danh sách.
 
@@ -3720,6 +3772,7 @@ Các Định hướng Lối viết Khác
   - **CaseNine**: [CaseNine/javascript](https://github.com/CaseNine/javascript)
   - **Cerner**: [Cerner](https://github.com/cerner/)
   - **Chartboost**: [ChartBoost/javascript-style-guide](https://github.com/ChartBoost/javascript-style-guide)
+  - **Coeur d'Alene Tribe**: [www.cdatribe-nsn.gov](https://www.cdatribe-nsn.gov)
   - **ComparaOnline**: [comparaonline/javascript](https://github.com/comparaonline/javascript-style-guide)
   - **Compass Learning**: [compasslearning/javascript-style-guide](https://github.com/compasslearning/javascript-style-guide)
   - **DailyMotion**: [dailymotion/javascript](https://github.com/dailymotion/javascript)
@@ -3803,7 +3856,7 @@ Các Định hướng Lối viết Khác
 
 ## <a name="terminology">Danh mục các Thuật ngữ</a>
 
-  Dưới đây là danh mục các từ tiếng Anh tương ứng của các thuật ngữ, và/hoặc các từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Các từ được dịch có thể chỉ được hiểu theo một ngữ cảnh là bản dịch này.
+  Dưới đây là danh mục các từ tiếng Anh tương ứng của các thuật ngữ, và/hoặc các từ, cụm từ mà thông thường không được dịch, như: "style guide", "object", "polyfill", v.v. Các từ, cụm từ được dịch có thể chỉ đúng trong ngữ cảnh là bản dịch này.
 
   > Nếu bạn cảm thấy một thuật ngữ có vẻ được dịch chưa hợp lý, hoặc bạn cần sự giải thích về một thuật ngữ, bạn có thể mở một [Vấn đề](https://github.com/dangkyokhoang/javascript-style-guide/issues) để thảo luận.
   >
