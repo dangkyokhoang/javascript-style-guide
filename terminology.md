@@ -20,6 +20,7 @@
   | Biểu thức | Expression |
   | Biểu thức hàm | Function expression |
   | Biểu thức hàm gọi tức thời | Immediately invoked function expression/IIFE |
+  | Bộ khung phần mềm | Framework |
   | Bộ phận hàm | Function signature |
   | Bộ tải | Loader |
   | Bộ tổng hợp | Bundler |
@@ -54,6 +55,7 @@
   | Đối số | Argument |
   | Đối tượng | Object |
   | Đối tượng duyệt | Iterator/iterator object |
+  | Đối tượng đích | Receiver |
   | Đối tượng độc nhất | Singleton |
   | Đối tượng khả duyệt | Iterable object |
   | Đối tượng rỗng | Null object |

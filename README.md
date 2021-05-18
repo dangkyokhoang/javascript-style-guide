@@ -74,6 +74,7 @@ Các Định hướng Lối viết Khác
     - `null`
     - `undefined`
     - `symbol`
+    - `bigint`
 
     ``` javascript
     const foo = 1;
@@ -84,7 +85,7 @@ Các Định hướng Lối viết Khác
     console.log(foo, bar); // => 1, 9
     ```
 
-    - Sự thiếu hỗ trợ cho các `Symbol` không thể được lấp đầy bởi các bộ trợ năng một cách toàn diện, do đó, chúng không nên được sử dụng khi hướng đến các trình duyệt/môi trường không có hỗ trợ sẵn.
+    - Sự thiếu hỗ trợ cho các `Symbol` và `BigInt` không thể được lấp đầy bởi các bộ trợ năng một cách toàn diện, do đó, chúng không nên được sử dụng khi hướng đến các trình duyệt/môi trường không có hỗ trợ sẵn.
 
   <a name="types--complex"></a><a name="1.2"></a>
   - [1.2](#types--complex) **Kiểu phức tạp**: Khi bạn truy cập một giá trị kiểu phức tạp, bạn làm việc trên tham chiếu giá trị của nó.
@@ -141,17 +142,21 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="references--block-scope"></a><a name="2.3"></a>
-  - [2.3](#references--block-scope) Lưu ý rằng cả `let` và `const` đều thuộc phạm vi khối.
+  - [2.3](#references--block-scope) Lưu ý rằng cả `let` và `const` đều thuộc phạm vi khối, còn `var` thuộc phạm vi hàm.
 
     ``` javascript
     // const và let chỉ tồn tại trong phạm vi khối tạo ra chúng.
     {
       let a = 1;
       const b = 1;
+      var c = 1;
     }
     console.log(a); // ReferenceError
     console.log(b); // ReferenceError
+    console.log(c); // In ra 1
     ```
+
+    Trong đoạn mã trên, bạn có thể thấy rằng lỗi ReferenceError xảy ra khi truy cập `a` và `b`, trong khi `c` vẫn là số đã gán. Nguyên nhân là vì `a` và `b` thuộc phạm vi khối, còn `c` thuộc phạm vi hàm chứa đoạn mã trên.
 
 **[⬆ về đầu trang](#table-of-contents)**
 
@@ -301,14 +306,15 @@ Các Định hướng Lối viết Khác
 
     // tốt nhất
     const has = Object.prototype.hasOwnProperty; // lưu tạm phương thức một lần, dùng cho cả mô-đun.
+    console.log(has.call(object, key));
     /* hoặc */
     import has from 'has'; // https://www.npmjs.com/package/has
-    // ...
     console.log(has.call(object, key));
     ```
 
   <a name="objects--rest-spread"></a>
-  - [3.8](#objects--rest-spread) Ưu tiên sử dụng toán tử liệt kê `...` so với [`Object.assign`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) để tạo bản sao nhanh của một đối tượng. Sử dụng toán tử còn-lại `...` để tạo một đối tượng mới với một số thuộc tính đã bị loại bỏ
+  - [3.8](#objects--rest-spread) Ưu tiên sử dụng cú pháp liệt kê `...` so với [`Object.assign`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) để tạo bản sao nhanh của một đối tượng. Sử dụng toán tử còn-lại `...` để tạo một đối tượng mới với một số thuộc tính đã bị loại bỏ. eslint: [`prefer-object-spread`](https://eslint.org/docs/rules/prefer-object-spread)
+
     ``` javascript
     // rất không tốt
     const original = { a: 1, b: 2 };
@@ -420,7 +426,7 @@ Các Định hướng Lối viết Khác
     });
 
     // tốt
-    [1, 2, 3].map(x => x + 1);
+    [1, 2, 3].map((x) => x + 1);
 
     // không tốt - không có giá trị trả về đồng nghĩa với `acc` sẽ trở thành undefined sau lượt duyệt đầu tiên
     [[0, 1], [2, 3], [4, 5]].reduce((acc, item, index) => {
@@ -498,7 +504,7 @@ Các Định hướng Lối viết Khác
   <a name="destructuring--object"></a><a name="5.1"></a>
   - [5.1](#destructuring--object) Sử dụng trích xuất đối tượng khi truy cập và sử dụng nhiều thuộc tính của một đối tượng. eslint: [`prefer-destructuring`](https://eslint.org/docs/rules/prefer-destructuring)
 
-    > Tại sao? Trích xuất giúp việc tạo các tham chiếu đến các thuộc tính trở nên dễ dàng hơn.
+    > Tại sao? Trích xuất giúp việc tạo các tham chiếu đến các thuộc tính trở nên dễ dàng hơn và hạn chế việc truy cập một đối tượng lặp đi lặp lại. Việc truy cập đối tượng lặp đi lặp lại tạo ra nhiều đoạn mã trùng lặp hơn, cần phải đọc nhiều hơn, và tăng khả năng xảy ra nhầm lẫn. Trích xuất đối tượng cũng tạo nên một ý tưởng về cấu trúc của đối tượng được sử dụng trong khối, thay vì cần phải đọc toàn bộ khối để xác định những thuộc tính được sử dụng.
 
     ``` javascript
     // không tốt
@@ -779,7 +785,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="functions--defaults-last"></a><a name="7.9"></a>
-  - [7.9](#functions--defaults-last) Luôn để các tham số mặc định ở sau cùng.
+  - [7.9](#functions--defaults-last) Luôn để các tham số mặc định ở sau cùng. eslint: [`default-param-last`](https://eslint.org/docs/rules/default-param-last)
 
     ``` javascript
     // không tốt
@@ -868,7 +874,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="functions--spread-vs-apply"></a><a name="7.14"></a>
-  - [7.14](#functions--spread-vs-apply) Ưu tiên sử dụng toán tử liệt kê `...` để gọi các hàm bất định. eslint: [`prefer-spread`](https://eslint.org/docs/rules/prefer-spread)
+  - [7.14](#functions--spread-vs-apply) Ưu tiên sử dụng cú pháp liệt kê `...` để gọi các hàm bất định. eslint: [`prefer-spread`](https://eslint.org/docs/rules/prefer-spread)
 
     > Tại sao? Nó nhìn sáng sủa hơn, bạn không cần phải đặt ngữ cảnh, và bạn cũng đâu thể dễ dàng kết hợp `new` với `apply`.
 
@@ -953,13 +959,13 @@ Các Định hướng Lối viết Khác
 
     ``` javascript
     // không tốt
-    [1, 2, 3].map(number => {
+    [1, 2, 3].map((number) => {
       const nextNumber = number + 1;
       `Một chuỗi có chứa số ${nextNumber}.`;
     });
 
     // tốt
-    [1, 2, 3].map(number => `Một chuỗi có chứa số ${number + 1}.`);
+    [1, 2, 3].map((number) => `Một chuỗi có chứa số ${number + 1}.`);
 
     // tốt
     [1, 2, 3].map((number) => {
@@ -998,14 +1004,14 @@ Các Định hướng Lối viết Khác
 
     ``` javascript
     // không tốt
-    ['get', 'post', 'put'].map(httpMethod => Object.prototype.hasOwnProperty.call(
+    ['get', 'post', 'put'].map((httpMethod) => Object.prototype.hasOwnProperty.call(
         httpMagicObjectWithAVeryLongName,
         httpMethod,
       )
     );
 
     // tốt
-    ['get', 'post', 'put'].map(httpMethod => (
+    ['get', 'post', 'put'].map((httpMethod) => (
       Object.prototype.hasOwnProperty.call(
         httpMagicObjectWithAVeryLongName,
         httpMethod,
@@ -1014,19 +1020,19 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="arrows--one-arg-parens"></a><a name="8.4"></a>
-  - [8.4](#arrows--one-arg-parens) Nếu hàm của bạn nhận một đối số và không sử dụng ngoặc nhọn, loại bỏ dấu ngoặc tròn. Nếu không, luôn luôn thêm ngoặc tròn trước và sau các đối số cho rõ ràng và nhất quán. Ghi chú: việc luôn sử dụng dấu ngoặc tròn được chấp nhận, khi đó, sử dụng [tùy chọn “always”](https://eslint.org/docs/rules/arrow-parens#always) cho eslint. eslint: [`arrow-parens`](https://eslint.org/docs/rules/arrow-parens.html)
+  - [8.4](#arrows--one-arg-parens) Luôn sử dụng ngoặc tròn xung quanh các đối số để rõ ràng và nhất quán. eslint: [`arrow-parens`](https://eslint.org/docs/rules/arrow-parens.html)
 
-    > Tại sao? Nhìn bớt rối mắt.
+    > Tại sao? Giảm thiểu sự khác biệt khi thêm và xóa các đối số.
 
     ``` javascript
     // không tốt
-    [1, 2, 3].map((x) => x * x);
-
-    // tốt
     [1, 2, 3].map(x => x * x);
 
     // tốt
-    [1, 2, 3].map(number => (
+    [1, 2, 3].map((x) => x * x);
+
+    // tốt
+    [1, 2, 3].map((number) => (
       `Một chuỗi thật là dài với số ${number}. Nó quá dài để chúng ta có thể viết cùng dòng với dòng .map!`
     ));
 
@@ -1048,13 +1054,13 @@ Các Định hướng Lối viết Khác
 
     ``` javascript
     // không tốt
-    const itemHeight = item => item.height <= 256 ? item.largeSize : item.smallSize;
+    const itemHeight = (item) => item.height <= 256 ? item.largeSize : item.smallSize;
 
     // không tốt
     const itemHeight = (item) => item.height >= 256 ? item.largeSize : item.smallSize;
 
     // tốt
-    const itemHeight = item => (item.height <= 256 ? item.largeSize : item.smallSize);
+    const itemHeight = (item) => (item.height <= 256 ? item.largeSize : item.smallSize);
 
     // tốt
     const itemHeight = (item) => {
@@ -1068,16 +1074,16 @@ Các Định hướng Lối viết Khác
 
     ``` javascript
     // không tốt
-    foo =>
+    (foo) =>
       bar;
 
-    foo =>
+    (foo) =>
       (bar);
 
     // tốt
-    foo => bar;
-    foo => (bar);
-    foo => (
+    (foo) => bar;
+    (foo) => (bar);
+    (foo) => (
        bar
     )
     ```
@@ -1247,6 +1253,39 @@ Các Định hướng Lối viết Khác
     }
     ```
 
+  <a name="classes--methods-use-this"></a>
+  - [9.7](#classes--methods-use-this) Các phương thức của lớp nên sử dụng `this` hoặc được chuyển thành phương thức tĩnh, trừ trường hợp thư viện bên ngoài hoặc bộ khung phần mềm bắt buộc sử dụng phương thức không phải phương thức tĩnh. Một phương thức là phương thức của thực thể nên mang ý nghĩa rằng nó hoạt động khác nhau dựa trên những thuộc tính của đối tượng đích.  eslint: [`class-methods-use-this`](https://eslint.org/docs/rules/class-methods-use-this)
+
+    ```javascript
+    // không tốt
+    class Foo {
+      bar() {
+        console.log('bar');
+      }
+    }
+
+    // tốt - this được sử dụng
+    class Foo {
+      bar() {
+        console.log(this.bar);
+      }
+    }
+
+    // tốt - constructor là ngoại lệ
+    class Foo {
+      constructor() {
+        // ...
+      }
+    }
+
+    // tốt - phương thức tĩnh không nên sử dụng this
+    class Foo {
+      static bar() {
+        console.log('bar');
+      }
+    }
+    ```
+
 **[⬆ về đầu trang](#table-of-contents)**
 
 ## <a name="modules">Các Mô-đun</a>
@@ -1368,7 +1407,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="modules--multiline-imports-over-newlines"></a>
-  - [10.8](#modules--multiline-imports-over-newlines) Các lệnh nhập nhiều dòng nên được căn đầu dòng giống như các mảng hay đối tượng nguyên văn nhiều dòng.
+  - [10.8](#modules--multiline-imports-over-newlines) Các lệnh nhập nhiều dòng nên được căn đầu dòng giống như các mảng hay đối tượng nguyên văn nhiều dòng. eslint: [`object-curly-newline`](https://eslint.org/docs/rules/object-curly-newline)
 
     > Tại sao? Các đấu ngoặc nhọn đều có cùng các quy tắc căn đầu dòng như tất cả mọi khối ngoặc nhọn trong bản định hướng này, cùng với như dấu phẩy ở cuối.
 
@@ -1399,6 +1438,21 @@ Các Định hướng Lối viết Khác
     // tốt
     import fooSass from 'foo.scss';
     import barCss from 'bar.css';
+    ```
+
+  <a name="modules--import-extensions"></a>
+  - [10.10](#modules--import-extensions) Không thêm phần mở rộng của tên tệp JavaScript. eslint: [`import/extensions`](https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/extensions.md)
+    > Tạo sao? Việc thêm phần mở rộng của tệp khiến cho việc cải tiến mã nguồn trở nên khó khăn hơn, và tạo nên những chi tiết không cần thiết trong lệnh nhập mô-đun mỗi khi bạn sử dụng.
+
+    ```javascript
+    // không tốt
+    import foo from './foo.js';
+    import bar from './bar.jsx';
+    import baz from './baz/index.jsx';
+    // tốt
+    import foo from './foo';
+    import bar from './bar';
+    import baz from './baz';
     ```
 
 **[⬆ về đầu trang](#table-of-contents)**
@@ -1446,7 +1500,7 @@ Các Định hướng Lối viết Khác
     });
 
     // tốt nhất, vẫn là sử dụng hàm
-    const increasedByOne = numbers.map(num => num + 1);
+    const increasedByOne = numbers.map((num) => num + 1);
     ```
 
   <a name="generators--nope"></a><a name="11.2"></a>
@@ -1550,6 +1604,7 @@ Các Định hướng Lối viết Khác
 
     const isJedi = getProp('jedi');
     ```
+
   <a name="es2016-properties--exponentiation-operator"></a>
   - [12.3](#es2016-properties--exponentiation-operator) Sử dụng toán tử lũy thừa `**` để tính các lũy thừa. eslint: [`no-restricted-properties`](https://eslint.org/docs/rules/no-restricted-properties).
 
@@ -1663,6 +1718,7 @@ Các Định hướng Lối viết Khác
       return name;
     }
     ```
+
   <a name="variables--no-chain-assignment"></a><a name="13.5"></a>
   - [13.5](#variables--no-chain-assignment) Đừng nối chuỗi các phép gán. eslint: [`no-multi-assign`](https://eslint.org/docs/rules/no-multi-assign)
 
@@ -1799,7 +1855,7 @@ Các Định hướng Lối viết Khác
 ## <a name="hoisting">Sự kéo lên</a>
 
   <a name="hoisting--about"></a><a name="14.1"></a>
-  - [14.1](#hoisting--about) Các khai báo bằng `var` được kéo lên đầu của phạm vi hàm gần nhất, còn phép gán thì không. Các khai báo bằng `const` và `let` thì mang trên mình một đặc tính khác là [Giai đoạn chết](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone). Điều này là quan trọng để biết tại sao [`typeof` không còn an toàn](http://es-discourse.com/t/why-typeof-is-no-longer-safe/15).
+  - [14.1](#hoisting--about) Các khai báo bằng `var` được kéo lên đầu của phạm vi hàm gần nhất, còn phép gán thì không. Các khai báo bằng `const` và `let` thì mang trên mình một đặc tính khác là [Giai đoạn chết](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone). Điều này là quan trọng để biết tại sao [`typeof` không còn an toàn](https://web.archive.org/web/20200121061528/http://es-discourse.com/t/why-typeof-is-no-longer-safe/15).
 
     ``` javascript
     // chúng ta biết thứ này sẽ không hoạt động (giả định rằng
@@ -2035,7 +2091,7 @@ Các Định hướng Lối viết Khác
     ```
 
   <a name="comparison--no-mixed-operators"></a>
-  - [15.8](#comparison--no-mixed-operators) Khi kết hợp các toán tử, nhớ đóng chúng trong ngoặc. Ngoại lệ duy nhất là các toán tử tiêu chuẩn (`+`, `-`, `*`, & `/`) vì chúng có thứ tự ưu tiên mà ai ai cũng hiểu. eslint: [`no-mixed-operators`](https://eslint.org/docs/rules/no-mixed-operators.html)
+  - [15.8](#comparison--no-mixed-operators) Khi kết hợp các toán tử, nhớ đóng chúng trong ngoặc. Ngoại lệ duy nhất là các toán tử tiêu chuẩn: `+`, `-` và `**` vì chúng có thứ tự ưu tiên mà ai ai cũng hiểu. Chúng tôi khuyến khích việc sử dụng đóng ngoặc cho `/` và `*` vì thứ tự ưu tiên của chúng có thể bị nhầm lẫn khi chúng được sử dụng gần nhau. eslint: [`no-mixed-operators`](https://eslint.org/docs/rules/no-mixed-operators.html)
 
     > Tại sao? Điều này cả thiện tính khả đọc và làm rõ ý định của nhà phát triển.
 
@@ -2052,11 +2108,14 @@ Các Định hướng Lối viết Khác
       return d;
     }
 
+    // không tốt
+    const bar = a + b / c * d;
+
     // tốt
     const foo = (a && b < 0) || c > 0 || (d + 1 === 0);
 
     // tốt
-    const bar = (a ** b) - (5 % d);
+    const bar = a ** b - (5 % d);
 
     // tốt
     if (a || (b && c)) {
@@ -2064,7 +2123,7 @@ Các Định hướng Lối viết Khác
     }
 
     // tốt
-    const bar = a + b / c * d;
+    const bar = a + (b / c) * d;
     ```
 
 **[⬆ về đầu trang](#table-of-contents)**
@@ -2548,6 +2607,10 @@ Các Định hướng Lối viết Khác
 
     // tốt
     const leds = stage.selectAll('.led').data(data);
+    const svg = leds.enter().append('svg:svg');
+    svg.classed('led', true).attr('width', (radius + margin) * 2);
+    const g = svg.append('svg:g');
+    g.attr('transform', `translate(${radius + margin},${radius + margin})`).call(tron.led);
     ```
 
   <a name="whitespace--after-blocks"></a><a name="18.7"></a>
@@ -2844,32 +2907,41 @@ Các Định hướng Lối viết Khác
 
     ``` javascript
     // không tốt
-    var obj = { "foo" : 42 };
-    var obj2 = { "foo":42 };
+    var obj = { foo : 42 };
+    var obj2 = { foo:42 };
 
     // tốt
-    var obj = { "foo": 42 };
+    var obj = { foo: 42 };
     ```
 
   <a name="whitespace--no-trailing-spaces"></a>
   - [19.19](#whitespace--no-trailing-spaces) Tránh các dấu cách ở cuối các dòng. eslint: [`no-trailing-spaces`](https://eslint.org/docs/rules/no-trailing-spaces)
 
   <a name="whitespace--no-multiple-empty-lines"></a>
-  - [19.20](#whitespace--no-multiple-empty-lines) Tránh để nhiều dòng trống liên tiếp và chỉ cho một dòng trống ở cuối tệp. eslint: [`no-multiple-empty-lines`](https://eslint.org/docs/rules/no-multiple-empty-lines)
+  - [19.20](#whitespace--no-multiple-empty-lines) Tránh để nhiều dòng trống liên tiếp, chỉ để một dòng trống ở cuối tệp, và không để dòng trống ở đầu tệp. eslint: [`no-multiple-empty-lines`](https://eslint.org/docs/rules/no-multiple-empty-lines)
 
     <!-- markdownlint-disable MD012 -->
     ``` javascript
-    // không tốt
+    // không tốt - nhiều dòng trống liên tiếp
     var x = 1;
 
 
+    var y = 2;
 
+    // bad - 2+ dòng trống ở cuối tệp
+    var x = 1;
+    var y = 2;
+
+
+    // không tốt - 1+ dòng trống ở đầu tệp
+
+    var x = 1;
     var y = 2;
 
     // tốt
     var x = 1;
-
     var y = 2;
+
     ```
     <!-- markdownlint-enable MD012 -->
 
@@ -3021,7 +3093,7 @@ Các Định hướng Lối viết Khác
     // không tốt - ném ra một ngoại lệ
     const luke = {}
     const leia = {}
-    [luke, leia].forEach(jedi => jedi.father = 'vader')
+    [luke, leia].forEach((jedi) => jedi.father = 'vader')
 
     // không tốt - ngém ra một ngoại lệ
     const reaction = "Không! Không thể nào!"
@@ -3086,6 +3158,8 @@ Các Định hướng Lối viết Khác
 
   <a name="coercion--numbers"></a><a name="21.3"></a>
   - [22.3](#coercion--numbers) Đối với các số: Sử dụng `Number` để ép kiểu và `parseInt` luôn phải được dùng với một cơ số. eslint: [`radix`](https://eslint.org/docs/rules/radix) [`no-new-wrappers`](https://eslint.org/docs/rules/no-new-wrappers)
+
+  > Tại sao? Hàm `parseInt` sinh ra một số nguyên bằng cách diễn giải nội dung của một chuỗi dựa trên một cơ số đã định. Ký tự trống ở đầu chuỗi được bỏ qua. Nếu cơ số là `undefined` hoặc `0`, cơ số đó được ngầm định là `10`, trừ trường hợp số trong chuỗi bắt đầu bằng cặp ký tự `0x` hoặc `0X`, khi đó cơ số `16` được sử dụng. Điều này khác với ECMAScript 3, khi nó chỉ không khuyến khích (nhưng cho phép) sử dụng diễn giải số theo hệ bát phân. Nhiều trình duyệt chưa áp dụng theo điều trên kể từ 2013. Và, vì những trình duyệt cũ cũng cần được hỗ trợ, hãy luôn sử dụng một cơ số.
 
     ``` javascript
     const inputValue = '4';
@@ -3658,11 +3732,11 @@ Các Định hướng Lối viết Khác
 
   - [On Layout & Web Performance](https://www.kellegous.com/j/2013/01/26/layout-performance/)
   - [String vs Array Concat](https://jsperf.com/string-vs-array-concat/2)
-  - [Try/Catch Cost In a Loop](https://jsperf.com/try-catch-in-loop-cost)
+  - [Try/Catch Cost In a Loop](https://jsperf.com/try-catch-in-loop-cost/12)
   - [Bang Function](https://jsperf.com/bang-function)
-  - [jQuery Find vs Context, Selector](https://jsperf.com/jquery-find-vs-context-sel/13)
+  - [jQuery Find vs Context, Selector](https://jsperf.com/jquery-find-vs-context-sel/164)
   - [innerHTML vs textContent for script text](https://jsperf.com/innerhtml-vs-textcontent-for-script-text)
-  - [Long String Concatenation](https://jsperf.com/ya-string-concat)
+  - [Long String Concatenation](https://jsperf.com/ya-string-concat/38)
   - [Are Javascript functions like `map()`, `reduce()`, and `filter()` optimized for traversing arrays?](https://www.quora.com/JavaScript-programming-language-Are-Javascript-functions-like-map-reduce-and-filter-already-optimized-for-traversing-array/answer/Quildreen-Motta)
   - Đang tải...
 
@@ -3690,7 +3764,8 @@ Các Định hướng Lối viết Khác
 
 **Các Định hướng Lối viết Khác**
 
-  - [Google JavaScript Style Guide](https://google.github.io/styleguide/javascriptguide.xml)
+  - [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html)
+  - [Google JavaScript Style Guide (Old)](https://google.github.io/styleguide/javascriptguide.xml)
   - [jQuery Core Style Guidelines](https://contribute.jquery.org/style-guide/js/)
   - [Principles of Writing Consistent, Idiomatic JavaScript](https://github.com/rwaldron/idiomatic.js)
   - [StandardJS](https://standardjs.com)
@@ -3753,18 +3828,15 @@ Các Định hướng Lối viết Khác
   Đây là danh sách những tổ chức sử dụng định hướng lối viết này. Gửi cho chúng tôi một yêu cầu kéo và chúng tôi sẽ thêm bạn vào danh sách.
 
   - **123erfasst**: [123erfasst/javascript](https://github.com/123erfasst/javascript)
-  - **3blades**: [3Blades](https://github.com/3blades)
   - **4Catalyzer**: [4Catalyzer/javascript](https://github.com/4Catalyzer/javascript)
   - **Aan Zee**: [AanZee/javascript](https://github.com/AanZee/javascript)
-  - **Adult Swim**: [adult-swim/javascript](https://github.com/adult-swim/javascript)
   - **Airbnb**: [airbnb/javascript](https://github.com/airbnb/javascript)
+  - **AloPeyk**: [AloPeyk](https://github.com/AloPeyk)
   - **AltSchool**: [AltSchool/javascript](https://github.com/AltSchool/javascript)
   - **Apartmint**: [apartmint/javascript](https://github.com/apartmint/javascript)
   - **Ascribe**: [ascribe/javascript](https://github.com/ascribe/javascript)
-  - **Avalara**: [avalara/javascript](https://github.com/avalara/javascript)
   - **Avant**: [avantcredit/javascript](https://github.com/avantcredit/javascript)
   - **Axept**: [axept/javascript](https://github.com/axept/javascript)
-  - **BashPros**: [BashPros/javascript](https://github.com/BashPros/javascript)
   - **Billabong**: [billabong/javascript](https://github.com/billabong/javascript)
   - **Bisk**: [bisk](https://github.com/Bisk/)
   - **Bonhomme**: [bonhommeparis/javascript](https://github.com/bonhommeparis/javascript)
@@ -3778,13 +3850,12 @@ Các Định hướng Lối viết Khác
   - **DailyMotion**: [dailymotion/javascript](https://github.com/dailymotion/javascript)
   - **DoSomething**: [DoSomething/eslint-config](https://github.com/DoSomething/eslint-config)
   - **Digitpaint** [digitpaint/javascript](https://github.com/digitpaint/javascript)
-  - **Drupal**: [www.drupal.org](https://www.drupal.org/project/drupal)
+  - **Drupal**: [www.drupal.org](https://git.drupalcode.org/project/drupal/blob/8.6.x/core/.eslintrc.json)
   - **Ecosia**: [ecosia/javascript](https://github.com/ecosia/javascript)
   - **Evernote**: [evernote/javascript-style-guide](https://github.com/evernote/javascript-style-guide)
   - **Evolution Gaming**: [evolution-gaming/javascript](https://github.com/evolution-gaming/javascript)
   - **EvozonJs**: [evozonjs/javascript](https://github.com/evozonjs/javascript)
   - **ExactTarget**: [ExactTarget/javascript](https://github.com/ExactTarget/javascript)
-  - **Expensify** [Expensify/Style-Guide](https://github.com/Expensify/Style-Guide/blob/master/javascript.md)
   - **Flexberry**: [Flexberry/javascript-style-guide](https://github.com/Flexberry/javascript-style-guide)
   - **Gawker Media**: [gawkermedia](https://github.com/gawkermedia/)
   - **General Electric**: [GeneralElectric/javascript](https://github.com/GeneralElectric/javascript)
@@ -3793,14 +3864,13 @@ Các Định hướng Lối viết Khác
   - **GreenChef**: [greenchef/javascript](https://github.com/greenchef/javascript)
   - **Grooveshark**: [grooveshark/javascript](https://github.com/grooveshark/javascript)
   - **Grupo-Abraxas**: [Grupo-Abraxas/javascript](https://github.com/Grupo-Abraxas/javascript)
+  - **Happeo**: [happeo/javascript](https://github.com/happeo/javascript)
   - **Honey**: [honeyscience/javascript](https://github.com/honeyscience/javascript)
   - **How About We**: [howaboutwe/javascript](https://github.com/howaboutwe/javascript-style-guide)
-  - **Huballin**: [huballin](https://github.com/huballin/)
   - **HubSpot**: [HubSpot/javascript](https://github.com/HubSpot/javascript)
   - **Hyper**: [hyperoslo/javascript-playbook](https://github.com/hyperoslo/javascript-playbook/blob/master/style.md)
   - **InterCity Group**: [intercitygroup/javascript-style-guide](https://github.com/intercitygroup/javascript-style-guide)
   - **Jam3**: [Jam3/Javascript-Code-Conventions](https://github.com/Jam3/Javascript-Code-Conventions)
-  - **JeopardyBot**: [kesne/jeopardy-bot](https://github.com/kesne/jeopardy-bot/blob/master/STYLEGUIDE.md)
   - **JSSolutions**: [JSSolutions/javascript](https://github.com/JSSolutions/javascript)
   - **Kaplan Komputing**: [kaplankomputing/javascript](https://github.com/kaplankomputing/javascript)
   - **KickorStick**: [kickorstick](https://github.com/kickorstick/)
@@ -3811,11 +3881,8 @@ Các Định hướng Lối viết Khác
   - **Mighty Spring**: [mightyspring/javascript](https://github.com/mightyspring/javascript)
   - **MinnPost**: [MinnPost/javascript](https://github.com/MinnPost/javascript)
   - **MitocGroup**: [MitocGroup/javascript](https://github.com/MitocGroup/javascript)
-  - **ModCloth**: [modcloth/javascript](https://github.com/modcloth/javascript)
-  - **Money Advice Service**: [moneyadviceservice/javascript](https://github.com/moneyadviceservice/javascript)
   - **Muber**: [muber](https://github.com/muber/)
   - **National Geographic**: [natgeo](https://github.com/natgeo/)
-  - **Nimbl3**: [nimbl3/javascript](https://github.com/nimbl3/javascript)
   - **NullDev**: [NullDevCo/JavaScript-Styleguide](https://github.com/NullDevCo/JavaScript-Styleguide)
   - **Nulogy**: [nulogy/javascript](https://github.com/nulogy/javascript)
   - **Orange Hill Development**: [orangehill/javascript](https://github.com/orangehill/javascript)
@@ -3824,13 +3891,10 @@ Các Định hướng Lối viết Khác
   - **Peerby**: [Peerby/javascript](https://github.com/Peerby/javascript)
   - **Pier 1**: [Pier1/javascript](https://github.com/pier1/javascript)
   - **Qotto**: [Qotto/javascript-style-guide](https://github.com/Qotto/javascript-style-guide)
-  - **Razorfish**: [razorfish/javascript-style-guide](https://github.com/razorfish/javascript-style-guide)
-  - **reddit**: [reddit/styleguide/javascript](https://github.com/reddit/styleguide/tree/master/javascript)
   - **React**: [facebook.github.io/react/contributing/how-to-contribute.html#style-guide](https://facebook.github.io/react/contributing/how-to-contribute.html#style-guide)
   - **REI**: [reidev/js-style-guide](https://github.com/rei/code-style-guides/)
   - **Ripple**: [ripple/javascript-style-guide](https://github.com/ripple/javascript-style-guide)
   - **Sainsbury’s Supermarkets**: [jsainsburyplc](https://github.com/jsainsburyplc)
-  - **SeekingAlpha**: [seekingalpha/javascript-style-guide](https://github.com/seekingalpha/javascript-style-guide)
   - **Shutterfly**: [shutterfly/javascript](https://github.com/shutterfly/javascript)
   - **Sourcetoad**: [sourcetoad/javascript](https://github.com/sourcetoad/javascript)
   - **Springload**: [springload](https://github.com/springload/)
@@ -3844,6 +3908,8 @@ Các Định hướng Lối viết Khác
   - **Terra**: [terra](https://github.com/cerner?utf8=%E2%9C%93&q=terra&type=&language=)
   - **TheLadders**: [TheLadders/javascript](https://github.com/TheLadders/javascript)
   - **The Nerdery**: [thenerdery/javascript-standards](https://github.com/thenerdery/javascript-standards)
+  - **Tomify**: [tomprats](https://github.com/tomprats)
+  - **Traitify**: [traitify/eslint-config-traitify](https://github.com/traitify/eslint-config-traitify)
   - **T4R Technology**: [T4R-Technology/javascript](https://github.com/T4R-Technology/javascript)
   - **UrbanSim**: [urbansim](https://github.com/urbansim/)
   - **VoxFeed**: [VoxFeed/javascript-style-guide](https://github.com/VoxFeed/javascript-style-guide)
@@ -3876,6 +3942,7 @@ Các Định hướng Lối viết Khác
   | Biểu thức | Expression |
   | Biểu thức hàm | Function expression |
   | Biểu thức hàm gọi tức thời | Immediately invoked function expression/IIFE |
+  | Bộ khung phần mềm | Framework |
   | Bộ phận hàm | Function signature |
   | Bộ tải | Loader |
   | Bộ tổng hợp | Bundler |
@@ -3910,6 +3977,7 @@ Các Định hướng Lối viết Khác
   | Đối số | Argument |
   | Đối tượng | Object |
   | Đối tượng duyệt | Iterator/iterator object |
+  | Đối tượng đích | Receiver |
   | Đối tượng độc nhất | Singleton |
   | Đối tượng khả duyệt | Iterable object |
   | Đối tượng rỗng | Null object |
